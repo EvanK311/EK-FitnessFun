@@ -2,5 +2,5 @@
 
 module.exports = {
     fitnessplan: require("./plan"),
-    Workout: ("./workout")
+    Workout: require("./workout")
 }

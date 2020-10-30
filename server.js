@@ -18,16 +18,44 @@ app.use(express.static("public"));
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutdb", { useNewUrlParser: true });
 
 db.fitnessplan.create({ name: "fitnessplan" })
-  .then(dbfitnessplan => {
-    console.log(dbfitnessplan);
-  })
-  .catch(({ message }) => {
-    console.log(message);
+    .then(dbfitnessplan => {
+        console.log(dbfitnessplan);
+    })
+    .catch(({ message }) => {
+        console.log(message);
+    });
+
+app.get("/workout", (req, res) => {
+    db.workout.find({})
+        .then(dbworkout => {
+            res.json(dbworkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+
+app.get("/fitnessplan", (req, res) => {
+    db.fitnessplan.find({})
+        .then(dbfitnessplan => {
+            res.json(dbfitnessplan);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+
+app.post("/submit", ({ body }, res) => {
+    db.workout.create(body)
+      .then(({ _id }) => db.workout.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
+      .then(dbworkout => {
+        res.json(dbworkout);
+      })
+      .catch(err => {
+        res.json(err);
+      });
   });
 
-
-
-  app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
-  });
-  
+});

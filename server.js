@@ -17,13 +17,13 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutdb", { useNewUrlParser: true });
 
-// db.fitnessplan.create({ name: "Plan" })
-//   .then(dbUser => {
-//     console.log(dbUser);
-//   })
-//   .catch(({ message }) => {
-//     console.log(message);
-//   });
+db.fitnessplan.create({ name: "fitnessplan" })
+  .then(dbfitnessplan => {
+    console.log(dbfitnessplan);
+  })
+  .catch(({ message }) => {
+    console.log(message);
+  });
 
 
 

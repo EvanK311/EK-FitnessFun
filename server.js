@@ -17,23 +17,22 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutdb", { useNewUrlParser: true });
 
-db.fitnessplan.create({ name: "fitnessplan" })
-    .then(dbfitnessplan => {
-        console.log(dbfitnessplan);
+// db.fitnessplan.create({ name: "test name" })
+//     .then(dbfitnessplan => {
+//         console.log(dbfitnessplan);
+//     })
+//     .catch(({ message }) => {
+//         console.log(message);
+//     });
+
+    
+db.workout.create({ name: "names" },{ type: "type" },{ weight: 5 },{ sets: 5 },{ reps: 5 },{ duration: 5 },)
+    .then(dbworkout => {
+        console.log(dbworkout);
     })
     .catch(({ message }) => {
         console.log(message);
     });
-
-app.get("/workout", (req, res) => {
-    db.workout.find({})
-        .then(dbworkout => {
-            res.json(dbworkout);
-        })
-        .catch(err => {
-            res.json(err);
-        });
-});
 
 app.get("/fitnessplan", (req, res) => {
     db.fitnessplan.find({})
@@ -45,16 +44,28 @@ app.get("/fitnessplan", (req, res) => {
         });
 });
 
+app.get("/workout", (req, res) => {
+    db.workout.find({})
+        .then(dbworkout => {
+            res.json(dbworkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
+
+
+
 app.post("/submit", ({ body }, res) => {
     db.workout.create(body)
-      .then(({ _id }) => db.workout.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
-      .then(dbworkout => {
-        res.json(dbworkout);
-      })
-      .catch(err => {
-        res.json(err);
-      });
-  });
+        .then(({ _id }) => db.workout.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
+        .then(dbworkout => {
+            res.json(dbworkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
+});
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
